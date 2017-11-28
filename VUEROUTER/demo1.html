@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>路由的基本用法</title>
+	<script type="text/javascript" src="js/vue.js"></script>	
+	<script type="text/javascript" src="js/vue-router.js"></script>
+	<style type="text/css">
+	/* 	.router-link-active{
+			font-size: 20px;
+			color:orange;
+			text-decoration: none;
+		} */
+		.active{
+			font-size: 20px;
+			color:orange;
+			text-decoration: none;
+		} 
+	</style>
+</head>
+<body>
+<div id="main">
+	<div>
+	<!--router-link组件定义导航 to属性定义url -->
+		<router-link to="/home">主页</router-link>
+		<router-link to="/new">新闻</router-link>
+	</div>
+</div>
+<div id="content">
+<!-- router-view 用来显示路由内容-->
+	<router-view></router-view>
+</div>
+<script>
+	//1.定义相应的组件
+	var home = {
+		template:"<h3>我是主页</h3>"
+	}
+	var news = {
+		template:"<h3>我是新闻</h3>"
+	}
+	//2，配置路由
+	const myroutes = [
+		{path:'/home',component:home},
+		{path:'/news',component:news},
+		{path:'*',redirect:'/home'}
+	]
+	//3.创建路由实例
+	const router = new VueRouter({
+		routes:myroutes,
+		mode:'history',
+		linkActiveClass:'active'//更改活动连接class类名
+	});
+	//4.创建VUE，并将路由挂载（注入路由）
+	new Vue({
+		el:'#main',
+		router//相当于router：router
+	})
+</script>
+
+	
+</body>
+</html>

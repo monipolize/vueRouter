@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>路由的嵌套，参数传递</title>
+	<link rel="stylesheet" type="text/css" href="css/animate.css">
+	<script type="text/javascript" src="js/vue.js"></script>	
+	<script type="text/javascript" src="js/vue-router.js"></script>
+	<style type="text/css">
+	/* 	.router-link-active{
+			font-size: 20px;
+			color:orange;
+			text-decoration: none;
+		} */
+		.active{
+			font-size: 20px;
+			color:orange;
+			text-decoration: none;
+		} 
+	</style>
+</head>
+<body>
+<div id="main">
+	<div>
+	<!--router-link组件定义导航 to属性定义url -->
+		<router-link to="/home">主页</router-link>
+		<router-link to="/user">用户</router-link>
+	</div>
+	<div id="content">
+<!-- router-view 用来显示路由内容-->
+<transition enter-active-class="animated bounceInLeft">
+	<router-view></router-view>
+</transition>
+	<br />
+	<button @click="push">添加路由</button>
+	<button @click="replace">替换路由</button>
+</div>
+</div>
+
+<template id="user">
+	<div>
+		<h3>用户信息</h3>
+		<ul>
+			<li>
+				<router-link to="/user/login?name=tom&pwd=123">登录</router-link>
+			</li>
+			<li>
+				<router-link to="/user/reg/john/123">注册<router-link>
+			</li>
+			<!-- //转换 -->
+			<router-link to="/user/reg" tag="li">注册<router-link>
+		</ul>
+	</div>
+<!-- router-view 用来显示路由内容-->
+	<transition enter-active-class="animated bounceInLeft">
+		<router-view></router-view>
+	</transition>
+</template>
+<script>
+	//1.定义相应的组件
+	var home = {
+		template:"<h3>我是主页{{$route.path}}</h3>"
+	}
+	var User = {
+		template:"#user"
+	}
+	var login = {
+		template:"<h3>用户登录:获取参数：{{$route.query}},{{$route.query.name}},{{$route.query.pwd}}</h3>"
+	}
+
+	var reg = {
+		template:"<h3>用户注册:获取参数：{{$route.params.name}}</h3>>"
+	}
+
+
+	//2，配置路由
+	const myroutes = [
+		{
+			path:'/home',
+			component:home
+		},
+		{	path:'/user',
+			component:user,
+			//子路由
+			children:[
+				{
+					path:'login',
+					component:login
+				},
+				{
+					path:'reg/:name/:pwd',
+					component:reg
+				}
+			]
+		},
+		{
+			path:'*',
+			redirect:'/home'
+		}
+	]
+	//3.创建路由实例
+	const router = new VueRouter({
+		routes:myroutes,
+		mode:'history',
+		linkActiveClass:'active'//更改活动连接class类名
+	});
+	//4.创建VUE，并将路由挂载（注入路由）
+	new Vue({
+		el:'#main',
+		router,//相当于router：router
+		methods:{
+			push(){//切换路由
+				router.push({path:'home'});
+			},
+			replace(){
+				router.replace({path:'user'});
+			}
+		}
+	})
+</script>
+
+	
+</body>
+</html>
